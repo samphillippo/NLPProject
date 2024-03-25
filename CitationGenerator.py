@@ -6,7 +6,7 @@ import re
 
 def generate_citation(data):
     '''
-    Generate a citation for a given row of data
+    Generate an IEEE citation for a given row of data
     '''
     data_array = data
     authors = data_array['authors']
