@@ -36,6 +36,18 @@ for index, filename in enumerate(filenames):
 
     df = df.dropna(subset=['doi', 'title', 'abstract']) # drop all rows where the doi or title is None
 
+    # filter out abstracts with less than 5 words.
+    abstract_mask = [True if x is not None and len(x.split()) > 5 else False for x in df['abstract']]
+    df = df[abstract_mask]
+
+    # language must be english or None (None is almost half of the papers)
+    lang_mask = [True if x is None or 'english' == x['name'].lower() else False for x in df['language']]
+    df = df[lang_mask]
+
+    # filter to be only journal articles as subject
+    journal_mask = [True if 'journal article' in str(x).lower() else False for x in df['subjects']]
+    df = df[journal_mask]
+
     df['citation'] = '' #TODO: make citation
 
     df['json'] = df.apply(pd.DataFrame.to_json, axis=1)
