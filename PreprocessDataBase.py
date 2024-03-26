@@ -20,6 +20,11 @@ total_time = time()
 total_kept = 0
 total_loaded = 0
 
+dropped_missing_data = 0
+dropped_abstract = 0
+dropped_lang = 0
+dropped_journal = 0
+
 for index, filename in enumerate(filenames):
     local_time = time()
 
@@ -34,30 +39,34 @@ for index, filename in enumerate(filenames):
     initial_num_docs = df.shape[0]
     total_loaded += initial_num_docs
 
+    df = df.dropna(subset=['title']) # drop all rows where the title is None
+    dropped_missing_data += (initial_num_docs - df.shape[0])
     
+    if df.shape[0] > 0:
+        # filter out abstracts with less than 5 words.
+        abstract_mask = [True if x is not None and len(x.split()) > 5 else False for x in df['abstract']]
+        temp = df[abstract_mask]
+        dropped_abstract += df.shape[0] - temp.shape[0]
+        df = temp
 
-    df = df.dropna(subset=['doi', 'title', 'abstract']) # drop all rows where the doi or title is None
+    if df.shape[0] > 0:
+        # language must be english or None (None is almost half of the papers)
+        lang_mask = [True if x is None or 'english' == x['name'].lower() else False for x in df['language']]
+        temp = df[lang_mask]
+        dropped_lang += df.shape[0] - temp.shape[0]
+        df = temp
 
-    # filter out abstracts with less than 5 words.
-    abstract_mask = [True if x is not None and len(x.split()) > 5 else False for x in df['abstract']]
-    df = df[abstract_mask]
+    # if df.shape[0] > 0:
+    #     # filter to be only journal articles as subject
+    #     journal_mask = [True if 'journal article' in str(x).lower() else False for x in df['subjects']]
+    #     temp = df[journal_mask]
+    #     dropped_journal += df.shape[0] - temp.shape[0]
+    #     df = temp
 
-    # language must be english or None (None is almost half of the papers)
-    lang_mask = [True if x is None or 'english' == x['name'].lower() else False for x in df['language']]
-    df = df[lang_mask]
-
-    # filter to be only journal articles as subject
-    journal_mask = [True if 'journal article' in str(x).lower() else False for x in df['subjects']]
-    df = df[journal_mask]
-
-
-    df['citation'] = df.apply(generate_citation, axis=1)
-
-
-    # Select only needed columns
-    df = df[['title', 'abstract', 'topics', 'citation']]
-
-    df['json'] = df.apply(pd.DataFrame.to_json, axis=1)
+    if df.shape[0] > 0:
+        df['citation'] = df.apply(generate_citation, axis=1)
+        df = df[['title', 'abstract', 'topics', 'citation']]
+        df['json'] = df.apply(pd.DataFrame.to_json, axis=1)
 
     final_num_docs = df.shape[0]
     total_kept += final_num_docs
@@ -77,5 +86,9 @@ for index, filename in enumerate(filenames):
     print('Finished in {} secs (Total Time: {} mins)\n'.format(round((time() - total_time), 2), round((time() - total_time) / 60, 2)))
 
 
-print('\nTotal Percent Docs Kept: {}% ({} / {})'.format(round(100.0 * total_kept / total_loaded, 2), total_kept, total_loaded))
-print('Total Time: {} mins\n'.format(round((time() - total_time) / 60, 2)))
+if total_loaded == 0:
+    print('No data loaded...')
+else:
+    print('\nTotal Percent Docs Kept: {}% ({} / {})'.format(round(100.0 * total_kept / total_loaded, 2), total_kept, total_loaded))
+    print('Docs Dropped Reasoning:\n - Missing Title: {}\n - Abstract length: {}\n - Language (Not English or None): {}\n - Not Journal Article: {}'.format(dropped_missing_data, dropped_abstract, dropped_lang, dropped_journal))
+    print('Total Time: {} mins\n'.format(round((time() - total_time) / 60, 2)))
