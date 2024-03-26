@@ -4,6 +4,8 @@ from time import time
 
 import pandas as pd
 
+from CitationGenerator import generate_citation
+
 # FOLDER_PATH = './../../core.ac.uk/datasets/core_2018-03-01_metadata'
 FOLDER_PATH = './test_json'
 
@@ -32,7 +34,7 @@ for index, filename in enumerate(filenames):
     initial_num_docs = df.shape[0]
     total_loaded += initial_num_docs
 
-    df = df[['doi', 'title', 'authors', 'datePublished', 'abstract', 'publisher', 'journals', 'topics']]
+    
 
     df = df.dropna(subset=['doi', 'title', 'abstract']) # drop all rows where the doi or title is None
 
@@ -48,7 +50,12 @@ for index, filename in enumerate(filenames):
     journal_mask = [True if 'journal article' in str(x).lower() else False for x in df['subjects']]
     df = df[journal_mask]
 
-    df['citation'] = '' #TODO: make citation
+
+    df['citation'] = df.apply(generate_citation, axis=1)
+
+
+    # Select only needed columns
+    df = df[['title', 'abstract', 'topics', 'citation']]
 
     df['json'] = df.apply(pd.DataFrame.to_json, axis=1)
 
