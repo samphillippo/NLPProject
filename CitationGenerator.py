@@ -26,7 +26,7 @@ def generate_citation(data):
         citation += _convert_date(date) + ", "
     doi = data_array['doi']
     if doi == None:
-        citation += "UNKNOWN DOI."
+        citation += _convert_oai_to_doi(doi)
     else:
         citation += doi + "."
     return citation
@@ -39,7 +39,11 @@ def _convert_date(date):
         return parsed_date.strftime("%Y")
     else:
         return parsed_date.strftime("%B %Y")
-        
+
+# If no DOI is provided, convert OAI to DOI
+def _convert_oai_to_doi(oai):
+    rest_call = "https://oai.core.ac.uk/"
+    return rest_call + oai
 
 #parses a string into a first name representation (John Joseph Flynn -> J.J. Flynn)
 def _parseFirstName(firstName):
