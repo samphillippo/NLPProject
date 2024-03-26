@@ -10,31 +10,26 @@ def generate_citation(data):
     '''
     data_array = data
     authors = data_array['authors']
-    if authors == None:
-        formatted_authors = "Unknown"
-    else:
-        formatted_authors = _parseAuthors(authors)
+    citation = ""
+    if authors != None:
+        citation += _parseAuthors(authors)
     title = data_array['title']
     if title == None:
-        title = "Unknown"
+        citation += "UNKNOWN TITLE, "
+    else:
+        citation += "\"" + title + "\", "
     publisher = data_array['publisher']
-    if publisher == None:
-        publisher = "Unknown"
+    if publisher != None:
+        citation += publisher + ", " 
+    date = data_array['datePublished']
+    if date != None:
+        citation += _convert_date(date) + ", "
     doi = data_array['doi']
     if doi == None:
-        doi = _convert_oai_to_doi(data_array['oai'])
-    date = data_array['datePublished']
-    if date == None:
-        date = "Unknown"
+        citation += "UNKNOWN DOI."
     else:
-        formatted_date = _convert_date(date)
-    citation = formatted_authors + "\"" + title + "\", " + publisher + ", " + formatted_date + ", " + doi + "."
+        citation += doi + "."
     return citation
-
-# If no DOI is provided, convert OAI to DOI
-def _convert_oai_to_doi(oai):
-    rest_call = "https://oai.core.ac.uk/"
-    return rest_call + oai
 
 
 # Given single date, parse into IEEE format (Month Year)
@@ -82,4 +77,3 @@ def _parseAuthors(authors):
             parsedAuthorString += _parseAuthor(author)
         parsedAuthorString += " et al., "
     return parsedAuthorString
-
