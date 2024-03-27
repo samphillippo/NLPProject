@@ -17,18 +17,22 @@ def generate_citation(data):
     if title == None:
         citation += "UNKNOWN TITLE, "
     else:
-        citation += "\"" + title + "\", "
+        citation += "\"" + str(title) + "\", "
     publisher = data_array['publisher']
     if publisher != None:
-        citation += publisher + ", " 
+        citation += str(publisher) + ", " 
     date = data_array['datePublished']
     if date != None:
-        citation += _convert_date(date) + ", "
+        try:
+            citation += _convert_date(str(date)) + ", "
+        except:
+            # print("Date Error... {}".format(date))
+            pass
     doi = data_array['doi']
     if doi == None:
-        citation += _convert_oai_to_doi(doi)
+        citation += _convert_oai_to_doi(str(doi))
     else:
-        citation += doi + "."
+        citation += str(doi) + "."
     return citation
 
 
@@ -69,6 +73,7 @@ def _parseAuthor(author):
         if len(sub_names) == 2:
             return _parseFirstName(sub_names[0]) + " " + sub_names[1] + ", "
         return names[0] + ", "
+    return ""
 
 #given an array of authors, gets the IEEE formatted string to be used in citation "{authors}, "
 def _parseAuthors(authors):
