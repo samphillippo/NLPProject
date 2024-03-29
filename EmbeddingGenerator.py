@@ -31,7 +31,7 @@ model = AutoModel.from_pretrained("allenai/scibert_scivocab_uncased")
 
 test_topics = ["Test", "AI"]
 
-def generate_embedding(title, abstract, topics):
+def generate_embedding(model, tokenizer, title, abstract, topics):
     # start_time = time()
     token_text = title + ". " + abstract + ". " + " ".join(topics)
     topic_tokens = tokenizer.tokenize(token_text)
