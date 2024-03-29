@@ -13,7 +13,7 @@ from CitationGenerator import generate_citation
 FOLDER_PATH = './test_json'
 
 
-def process_file(filename):
+def process_file(filename, embedding_func):
     # local_time = time()
 
     # print('Processing {}'.format(filename))
@@ -41,39 +41,35 @@ def process_file(filename):
         temp = df[lang_mask]
         tot_dropped_lang = df.shape[0] - temp.shape[0]
         df = temp
-
-    tot_dropped_journal = 0
-    if df.shape[0] > 0:
-        # filter to be only journal articles as subject
-        journal_mask = [True if 'journal article' in str(x).lower() else False for x in df['subjects']]
-        temp = df[journal_mask]
-        tot_dropped_journal = df.shape[0] - temp.shape[0]
-        df = temp
         
-    json_values = []
+    # json_values = []
+    embeddings = []
 
     if df.shape[0] > 0:
         df['citation'] = df.apply(generate_citation, axis=1)
-        df = df[['title', 'abstract', 'topics', 'citation']]
-        json_values = [row.to_json() for _, row in df.iterrows()]
+        # df = df[['title', 'abstract', 'topics', 'citation']]
+        embeddings = [embedding_func(row['title'], row['title'], row['title']) for _, row in df.iterrows()]
+        # json_values = [row.to_json() for _, row in df.iterrows()]
 
-    final_num_docs = df.shape[0]
+    # final_num_docs = df.shape[0]
 
-    file_prefix = filename.split('.')[0]
-    out_path = FOLDER_PATH + '/' + file_prefix + '.json'
+    # file_prefix = filename.split('.')[0]
+    # out_path = FOLDER_PATH + '/' + file_prefix + '.json'
 
-    if len(json_values) > 0:
-        with open(out_path, 'w') as file:
-            for json_line in json_values:
-                file.write(json_line + '\n')
+    # if len(json_values) > 0:
+    #     with open(out_path, 'w') as file:
+    #         for json_line in json_values:
+    #             file.write(json_line + '\n')
     
     os.remove(in_path)
     
     del df
     gc.collect()
 
+    return embeddings
+
     # print('Finished processing {} in {} secs\n - {}% docs kept ({} / {})\n'.format(filename, round((time() - local_time), 2), round(100.0 * final_num_docs / initial_num_docs, 2), final_num_docs, initial_num_docs))
-    return (initial_num_docs, final_num_docs, tot_dropped_missing_data, tot_dropped_abstract, tot_dropped_lang, tot_dropped_journal)
+    # return (initial_num_docs, final_num_docs, tot_dropped_missing_data, tot_dropped_abstract, tot_dropped_lang)
     # END METHOD
 
 
@@ -90,7 +86,6 @@ if __name__ == '__main__':
     dropped_missing_data = 0
     dropped_abstract = 0
     dropped_lang = 0
-    dropped_journal = 0
 
     results = []
     with tqdm(total=len(filenames)) as progress:
@@ -104,7 +99,6 @@ if __name__ == '__main__':
                 dropped_missing_data += result[2]
                 dropped_abstract += result[3]
                 dropped_abstract += result[4]
-                dropped_journal += result[5]
                 progress.update()
 
     if total_loaded == 0:
