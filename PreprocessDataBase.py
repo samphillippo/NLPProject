@@ -1,7 +1,8 @@
-
 import os
+import gc
 from time import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
+
 
 from tqdm import tqdm
 import pandas as pd
@@ -59,6 +60,9 @@ def process_file(filename):
                 file.write(json_line + '\n')
     
     os.remove(in_path)
+    
+    del df
+    gc.collect()
 
     # print('Finished processing {} in {} secs\n - {}% docs kept ({} / {})\n'.format(filename, round((time() - local_time), 2), round(100.0 * final_num_docs / initial_num_docs, 2), final_num_docs, initial_num_docs))
     return (initial_num_docs, final_num_docs, tot_dropped_missing_data, tot_dropped_abstract, tot_dropped_lang)
@@ -81,7 +85,7 @@ if __name__ == '__main__':
 
     results = []
     with tqdm(total=len(filenames)) as progress:
-        with ProcessPoolExecutor(max_workers=8) as executor:
+        with ProcessPoolExecutor(max_workers=4, max_tasks_per_child=1) as executor:
             # results = list(tqdm(executor.map(process_file, filenames), total=len(filenames)))
             futures = [executor.submit(process_file, filename) for filename in filenames]
             for future in as_completed(futures):
@@ -92,6 +96,14 @@ if __name__ == '__main__':
                 dropped_abstract += result[3]
                 dropped_abstract += result[4]
                 progress.update()
+        # for file in filenames:
+        #     result = process_file(file)
+        #     total_loaded += result[0]
+        #     total_kept += result[1]
+        #     dropped_missing_data += result[2]
+        #     dropped_abstract += result[3]
+        #     dropped_abstract += result[4]
+        #     progress.update()
 
     if total_loaded == 0:
         print('\nError: No data loaded...')
