@@ -20,7 +20,6 @@ XZ_MIN_SIZE_MB = 150
 if __name__ == '__main__':
     # Load SciBERT tokenizer
     tokenizer = AutoTokenizer.from_pretrained("allenai/scibert_scivocab_uncased")
-    tokenizer = tokenizer.to(device)
 
     # Load SciBERT model
     model = AutoModel.from_pretrained("allenai/scibert_scivocab_uncased")
@@ -36,5 +35,5 @@ if __name__ == '__main__':
             chunked_files = chunk_xz_file(path)
             files.extend(chunked_files)
         else:
-            embeddings = process_file(path, lambda title, abstract, topics: generate_embedding(model, tokenizer, title, abstract, topics))
+            embeddings = process_file(path, lambda title, abstract, topics: generate_embedding(model, tokenizer, device, title, abstract, topics))
             # TODO: save to Vector DB
