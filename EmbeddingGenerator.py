@@ -30,12 +30,12 @@ from time import time
 # test_topics = ["Test", "AI"]
 
 def generate_embedding(model, tokenizer, device, title, abstract, topics):
-    # start_time = time()
     token_text = title + ". " + abstract + ". " + " ".join(topics)
-    tokens = tokenizer.tokenize(token_text)
+    return generate_embedding_from_text(model, tokenizer, device, token_text)
+    
 
-    # print('Tokenizing Time: {} seconds\n'.format(round((time() - start_time), 2)))
-    # start_time = time()
+def generate_embedding_from_text(model, tokenizer, device, token_text):
+    tokens = tokenizer.tokenize(token_text)
 
     token_embeddings = []
     for token in tokens:
@@ -52,5 +52,4 @@ def generate_embedding(model, tokenizer, device, title, abstract, topics):
     # Average all token embeddings
     average_embedding = torch.stack(token_embeddings).mean(dim=0)
 
-    # print('Embedding Time: {} seconds\n'.format(round((time() - start_time), 2)))
     return average_embedding

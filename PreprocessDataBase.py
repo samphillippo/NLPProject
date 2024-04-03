@@ -29,7 +29,7 @@ def process_file(filename, embedding_func):
     # tot_dropped_abstract = 0
     if df.shape[0] > 0:
         # filter out abstracts with less than 5 words.
-        abstract_mask = [True if x is not None and len(str(x).split()) > 5 else False for x in df['abstract']]
+        abstract_mask = [True if x is not None and len(str(x)) > 100 else False for x in df['abstract']]
         temp = df[abstract_mask]
         # tot_dropped_abstract = df.shape[0] - temp.shape[0]
         df = temp
@@ -48,7 +48,7 @@ def process_file(filename, embedding_func):
     if df.shape[0] > 0:
         df['citation'] = df.apply(generate_citation, axis=1)
         # df = df[['title', 'abstract', 'topics', 'citation']]
-        embeddings = [embedding_func(row['title'], row['abstract'], row['topics']) for _, row in df.iterrows()]
+        embeddings = [{ "vector": embedding_func(row['title'], row['abstract'], row['topics']), "annotation": "{}\n\n{}".format(row['citation'], row['abstract'])} for _, row in df.iterrows()]
         # json_values = [row.to_json() for _, row in df.iterrows()]
 
     # final_num_docs = df.shape[0]

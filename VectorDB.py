@@ -12,6 +12,7 @@ class VectorClient:
         except:
             print("Unable to connect to Milvus Client...")
 
+
     def insert(self, vectorEmbeddings):
         """
         Inserts the given vectorEmbeddings to the vector DB.
@@ -40,8 +41,9 @@ class VectorClient:
             response object from Milvus
         """
         res = self.client.search(
-            collection_name = self.collectionName,    # target collection
-            data = queryVectors,                # query vectors
-            limit = responseLimit,                # number of returned entities
+            collection_name = self.collectionName,      # target collection
+            data = queryVectors,                        # query vectors
+            limit = responseLimit,                      # number of returned entities
+            output_fields=["annotation"]                # non-indexed fields to return
         )
         return res
