@@ -1,6 +1,7 @@
 import os
 from collections import deque
 from transformers import AutoTokenizer, AutoModel
+from torch import torch
 
 
 
@@ -11,7 +12,7 @@ from EmbeddingGenerator import generate_embedding
 def shouldChunkFile(filepath, min_size_MB):
     return (os.path.getsize(filepath) / 1000.0) > (min_size_MB * 1000.0)
 
-
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 FOLDER_PATH = './test_json'
 XZ_MIN_SIZE_MB = 150
@@ -19,9 +20,11 @@ XZ_MIN_SIZE_MB = 150
 if __name__ == '__main__':
     # Load SciBERT tokenizer
     tokenizer = AutoTokenizer.from_pretrained("allenai/scibert_scivocab_uncased")
+    tokenizer = tokenizer.to(device)
 
     # Load SciBERT model
     model = AutoModel.from_pretrained("allenai/scibert_scivocab_uncased")
+    model = model.to(device)
 
     files = deque(filter(lambda x: x.endswith('.xz'), os.listdir(FOLDER_PATH)))
 
@@ -35,4 +38,3 @@ if __name__ == '__main__':
         else:
             embeddings = process_file(path, lambda title, abstract, topics: generate_embedding(model, tokenizer, title, abstract, topics))
             # TODO: save to Vector DB
-

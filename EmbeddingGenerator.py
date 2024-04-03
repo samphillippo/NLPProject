@@ -1,5 +1,3 @@
-from transformers import AutoTokenizer, AutoModel
-from torch import torch
 from time import time
 
 # Load SciBERT tokenizer
@@ -34,10 +32,10 @@ from time import time
 def generate_embedding(model, tokenizer, title, abstract, topics):
     # start_time = time()
     token_text = title + ". " + abstract + ". " + " ".join(topics)
-    topic_tokens = tokenizer.tokenize(token_text)
+    tokens = tokenizer.tokenize(token_text)
 
     token_embeddings = []
-    for token in topic_tokens:
+    for token in tokens:
         # Tokenize the token separately and get the token ID
         token_ids = tokenizer(token, return_tensors="pt")["input_ids"]
 
