@@ -1,15 +1,10 @@
-from transformers import AutoTokenizer, AutoModel
-from torch import torch
 from time import time
 
 # Load SciBERT tokenizer
-tokenizer = AutoTokenizer.from_pretrained("allenai/scibert_scivocab_uncased")
+# tokenizer = AutoTokenizer.from_pretrained("allenai/scibert_scivocab_uncased")
 
-# Load SciBERT model
-model = AutoModel.from_pretrained("allenai/scibert_scivocab_uncased")
-
-# #TODO: use this?
-# #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# # Load SciBERT model
+# model = AutoModel.from_pretrained("allenai/scibert_scivocab_uncased")
 
 # test_title = "The Role of Artificial Intelligence in Transforming Healthcare: A Comprehensive Review"
 
@@ -34,10 +29,10 @@ test_topics = ["Test", "AI"]
 def generate_embedding(model, tokenizer, title, abstract, topics):
     # start_time = time()
     token_text = title + ". " + abstract + ". " + " ".join(topics)
-    topic_tokens = tokenizer.tokenize(token_text)
+    tokens = tokenizer.tokenize(token_text)
 
     token_embeddings = []
-    for token in topic_tokens:
+    for token in tokens:
         # Tokenize the token separately and get the token ID
         token_ids = tokenizer(token, return_tensors="pt")["input_ids"]
 
