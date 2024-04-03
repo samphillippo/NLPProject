@@ -3,10 +3,10 @@ from torch import torch
 from time import time
 
 # Load SciBERT tokenizer
-tokenizer = AutoTokenizer.from_pretrained("allenai/scibert_scivocab_uncased")
+# tokenizer = AutoTokenizer.from_pretrained("allenai/scibert_scivocab_uncased")
 
 # Load SciBERT model
-model = AutoModel.from_pretrained("allenai/scibert_scivocab_uncased")
+# model = AutoModel.from_pretrained("allenai/scibert_scivocab_uncased")
 
 # #TODO: use this?
 # #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -29,7 +29,7 @@ model = AutoModel.from_pretrained("allenai/scibert_scivocab_uncased")
 # In conclusion, AI holds tremendous promise for transforming healthcare delivery, diagnosis, treatment, and management. By harnessing the power of AI, we can usher in a new era of precision medicine, improve patient outcomes, and enhance the overall quality and efficiency of healthcare services. However, to realize the full potential of AI in healthcare, interdisciplinary collaboration, regulatory frameworks, and continuous innovation are essential to address the complex challenges and opportunities ahead.
 # """
 
-test_topics = ["Test", "AI"]
+# test_topics = ["Test", "AI"]
 
 def generate_embedding(model, tokenizer, title, abstract, topics):
     # start_time = time()

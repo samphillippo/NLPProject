@@ -21,25 +21,25 @@ def process_file(filename, embedding_func):
 
     df = pd.read_json(in_path, lines=True, compression={'method':'xz'})
 
-    initial_num_docs = df.shape[0]
+    # initial_num_docs = df.shape[0]
 
     df = df.dropna(subset=['title']) # drop all rows where the title is None
-    tot_dropped_missing_data = (initial_num_docs - df.shape[0])
+    # tot_dropped_missing_data = (initial_num_docs - df.shape[0])
     
-    tot_dropped_abstract = 0
+    # tot_dropped_abstract = 0
     if df.shape[0] > 0:
         # filter out abstracts with less than 5 words.
         abstract_mask = [True if x is not None and len(str(x).split()) > 5 else False for x in df['abstract']]
         temp = df[abstract_mask]
-        tot_dropped_abstract = df.shape[0] - temp.shape[0]
+        # tot_dropped_abstract = df.shape[0] - temp.shape[0]
         df = temp
 
-    tot_dropped_lang = 0
+    # tot_dropped_lang = 0
     if df.shape[0] > 0:
         # language must be english or None (None is almost half of the papers)
         lang_mask = [True if x is None or (isinstance(x, dict) and 'english' == x['name'].lower()) or str(x) == 'nan' else False for x in df['language']]
         temp = df[lang_mask]
-        tot_dropped_lang = df.shape[0] - temp.shape[0]
+        # tot_dropped_lang = df.shape[0] - temp.shape[0]
         df = temp
         
     # json_values = []
