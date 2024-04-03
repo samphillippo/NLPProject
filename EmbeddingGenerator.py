@@ -1,4 +1,6 @@
 from time import time
+from torch import torch
+
 
 # Load SciBERT tokenizer
 # tokenizer = AutoTokenizer.from_pretrained("allenai/scibert_scivocab_uncased")
