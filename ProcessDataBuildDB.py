@@ -31,19 +31,26 @@ XZ_MIN_SIZE_MB = 150
 
 if __name__ == '__main__':
 
+    print("Initializing Tokenizer and model")
     device, tokenizer, model = setupTokenizerAndModel()
 
+    print("Initializing Vector DB Client")
     vectorClient = VectorClient()
 
-    files = deque(filter(lambda x: x.endswith('.xz'), os.listdir(FOLDER_PATH)))
+    print("Gathering initial files into queue")
+    files = deque(map((lambda file: FOLDER_PATH + '/' + file), filter(lambda x: x.endswith('.xz'), os.listdir(FOLDER_PATH))))
 
-    while not files.empty():
+    while len(files) > 0:
         file = files.popleft()
-        path = FOLDER_PATH + '/' + file
+        print("Processing file {}".format(file))
 
-        if shouldChunkFile(path, XZ_MIN_SIZE_MB):
-            chunked_files = chunk_xz_file(path)
+        if shouldChunkFile(file, XZ_MIN_SIZE_MB):
+            print("Chunking...")
+            chunked_files = chunk_xz_file(file)
             files.extend(chunked_files)
         else:
-            embeddings = process_file(path, lambda title, abstract, topics: generate_embedding(model, tokenizer, device, title, abstract, topics))
+            print("Processing docs and computing embeddings...")
+            embeddings = process_file(file, lambda title, abstract, topics: generate_embedding(model, tokenizer, device, title, abstract, topics))
+            print(embeddings[:3])
+            print("Inserting to Vector DB")
             vectorClient.insert(embeddings)

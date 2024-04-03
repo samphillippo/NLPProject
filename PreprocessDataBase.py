@@ -9,17 +9,13 @@ import pandas as pd
 
 from CitationGenerator import generate_citation
 
-# FOLDER_PATH = './../../core.ac.uk/datasets/core_2018-03-01_metadata'
-FOLDER_PATH = './test_json'
-
 
 def process_file(filename, embedding_func):
     # local_time = time()
 
     # print('Processing {}'.format(filename))
-    in_path = FOLDER_PATH + '/' + filename
 
-    df = pd.read_json(in_path, lines=True, compression={'method':'xz'})
+    df = pd.read_json(filename, lines=True, compression={'method':'xz'})
 
     # initial_num_docs = df.shape[0]
 
@@ -46,8 +42,10 @@ def process_file(filename, embedding_func):
     embeddings = []
 
     if df.shape[0] > 0:
+        print("Generating citations")
         df['citation'] = df.apply(generate_citation, axis=1)
         # df = df[['title', 'abstract', 'topics', 'citation']]
+        print("Generating embeddings")
         embeddings = [{ "vector": embedding_func(row['title'], row['abstract'], row['topics']), "annotation": "{}\n\n{}".format(row['citation'], row['abstract'])} for _, row in df.iterrows()]
         # json_values = [row.to_json() for _, row in df.iterrows()]
 
@@ -61,7 +59,7 @@ def process_file(filename, embedding_func):
     #         for json_line in json_values:
     #             file.write(json_line + '\n')
     
-    os.remove(in_path)
+    os.remove(filename)
     
     del df
     gc.collect()

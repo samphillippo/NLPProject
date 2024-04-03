@@ -7,8 +7,8 @@ class VectorClient:
 
     def __init__(self):
         try: 
-            self.client = MilvusClient("http://localhost:19530")
-            self.collectionName = "collectionName"
+            self.client = MilvusClient("50.116.63.108:19530")
+            self.collectionName = "citationDB"
         except:
             print("Unable to connect to Milvus Client...")
 
