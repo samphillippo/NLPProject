@@ -51,6 +51,6 @@ if __name__ == '__main__':
         else:
             print("Processing docs and computing embeddings...")
             embeddings = process_file(file, lambda title, abstract, topics: generate_embedding(model, tokenizer, device, title, abstract, topics))
-            print(embeddings[:3])
+            print(embeddings)
             print("Inserting to Vector DB")
             vectorClient.insert(embeddings)
