@@ -1,6 +1,12 @@
 from time import time
 from torch import torch
+import nltk
 
+def get_stopwords_set():
+    nltk.download('stopwords')
+    from nltk.corpus import stopwords
+    return set(stopwords.words('english'))
+stopwords_set = get_stopwords_set()
 
 # Load SciBERT tokenizer
 # tokenizer = AutoTokenizer.from_pretrained("allenai/scibert_scivocab_uncased")
@@ -34,13 +40,15 @@ from torch import torch
 def generate_embedding(model, tokenizer, device, title, abstract, topics):
     token_text = title + ". " + abstract + ". " + " ".join(topics)
     return generate_embedding_from_text(model, tokenizer, device, token_text)
-    
+
 
 def generate_embedding_from_text(model, tokenizer, device, token_text):
     tokens = tokenizer.tokenize(token_text)
 
     token_embeddings = []
     for token in tokens:
+        if token in stopwords_set:
+            continue
         # Tokenize the token separately and get the token ID
         token_ids = tokenizer(token, return_tensors="pt")["input_ids"].to(device)
 
