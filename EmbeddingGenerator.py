@@ -62,4 +62,4 @@ def generate_embedding_from_text(model, tokenizer, device, token_text):
     # Average all token embeddings
     average_embedding = torch.stack(token_embeddings).mean(dim=0)
 
-    return average_embedding
+    return average_embedding.tolist()
