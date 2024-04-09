@@ -53,6 +53,7 @@ if __name__ == '__main__':
     #print("Gathering initial files into queue")
     #files = deque(map((lambda file: FOLDER_PATH + '/' + file), filter(lambda x: x.endswith('.xz'), os.listdir(FOLDER_PATH))))
 
+    print("Total files to process: {}".format(len(files)))
     while len(files) > 0:
         file = files.popleft()
         if file in completedFiles:
