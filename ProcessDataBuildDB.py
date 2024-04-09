@@ -31,7 +31,7 @@ XZ_MIN_SIZE_MB = 150
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
-        print("Usage: python GenerateFileList.py <read_folder_path> <completed_file_path>")
+        print("Usage: python ProcessDataBuildDB.py <read_folder_path> <completed_file_path>")
         sys.exit(1)
 
     readFolderPath = sys.argv[1]
