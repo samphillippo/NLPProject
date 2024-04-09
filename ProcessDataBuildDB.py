@@ -30,17 +30,12 @@ def setupTokenizerAndModel():
 XZ_MIN_SIZE_MB = 150
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Usage: python GenerateFileList.py <all_file_path> <completed_file_path")
+    if len(sys.argv) != 3:
+        print("Usage: python GenerateFileList.py <read_folder_path> <completed_file_path>")
         sys.exit(1)
 
-    print("Creating file queue")
-    allFilePath = sys.argv[1]
-    files = []
-    with open(allFilePath, 'r') as file:
-        for line in file:
-            files.append(line.rstrip('\n'))
-    files = deque(files)
+    readFolderPath = sys.argv[1]
+    files = deque(map((lambda file: readFolderPath + '/' + file), filter(lambda x: x.endswith('.xz'), os.listdir(readFolderPath))))
 
     completedFilePath = sys.argv[2]
     completedFiles = []
