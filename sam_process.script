@@ -1,0 +1,12 @@
+#!/bin/bash
+#SBATCH --partition=gpu
+#SBATCH --nodes=1
+#SBATCH --gres=a100:1
+#SBATCH --time=07:59:00
+#SBATCH --job-name=nlp_scibert
+#SBATCH --mem=82GB
+#SBATCH --ntasks=1
+
+module load cuda/12.1
+conda activate /home/phillippo.s/nlp_proj
+python ProcessDataBuildDB.py ../../../scratch/selvitelli.n/dataset/split_0 ./completed.txt
