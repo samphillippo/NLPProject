@@ -21,7 +21,7 @@ def process_file(filename, embedding_func):
 
     df = df.dropna(subset=['title']) # drop all rows where the title is None
     # tot_dropped_missing_data = (initial_num_docs - df.shape[0])
-    
+
     # tot_dropped_abstract = 0
     if df.shape[0] > 0:
         # filter out abstracts with less than 5 words.
@@ -37,7 +37,7 @@ def process_file(filename, embedding_func):
         temp = df[lang_mask]
         # tot_dropped_lang = df.shape[0] - temp.shape[0]
         df = temp
-        
+
     # json_values = []
     embeddings = []
 
@@ -58,9 +58,9 @@ def process_file(filename, embedding_func):
     #     with open(out_path, 'w') as file:
     #         for json_line in json_values:
     #             file.write(json_line + '\n')
-    
-    os.remove(filename)
-    
+
+    #os.remove(filename)
+
     del df
     gc.collect()
 
