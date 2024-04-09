@@ -1,12 +1,14 @@
 import os
 
-FOLDER_PATH = './test_json'
-NUM_SPLITS = 5
+FOLDER_PATH = '/scratch/selvitelli.n/dataset'
+NUM_SPLITS = 2
 
 
 if __name__ == '__main__':
     
     filepaths = list(sorted(map((lambda file: FOLDER_PATH + '/' + file), filter(lambda x: x.endswith('.xz'), os.listdir(FOLDER_PATH))), key=(os.path.getsize)))
+
+    print("Splitting {} files {} ways".format(len(filepaths), NUM_SPLITS))
 
     split_idx = 0
 
