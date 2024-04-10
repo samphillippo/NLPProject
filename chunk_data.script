@@ -1,0 +1,13 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=2
+#SBATCH --cpus-per-task=1
+#SBATCH --time=12:00:00
+#SBATCH --job-name=ChunkLargeFiles
+#SBATCH --mem=100G
+#SBATCH --partition=short
+
+module load anaconda3/2022.05
+source activate /home/selvitelli.n/py_env
+python /home/selvitelli.n/NLPProject/ChunkLargeFile.py
+

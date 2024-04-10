@@ -163,3 +163,4 @@ test_workspace
 test_json
 .DS_Store
 */.DS_Store
+*.out

@@ -64,14 +64,15 @@ def find_xz_files_above_size(folderpath, xz_MB_min_size=150):
 
 def chunk_all_files_in_folder(directory):
     files = find_xz_files_above_size(directory, xz_MB_min_size=100)
-
-    for file in files:
+    print("Chunking {} files".format(len(files)))
+    for index, file in enumerate(files):
         chunk_xz_file(directory + '/' + file)
+        print("Chunked {}".format(file))
     return directory
 
 
 
-FOLDERS = ['./test_json/split_0', './test_json/split_1']
+FOLDERS = ['/scratch/selvitelli.n/dataset/split_0', '/scratch/selvitelli.n/dataset/split_1']
 
 
 if __name__ == '__main__':
