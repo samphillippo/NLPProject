@@ -1,0 +1,16 @@
+#!/bin/bash
+#SBATCH --partition=short
+#SBATCH --nodes=1
+#SBATCH --time=00:30:00
+#SBATCH --job-name=setup_conda_env
+#SBATCH --ntasks=1
+#SBATCH --output=myjob.%j.out
+#SBATCH --error=myjob.%j.err
+
+module load anaconda3/2022.05
+
+conda create --prefix=/home/selvitelli.n/nlp_conda_env python=3.9 anaconda
+
+source activate /home/selvitelli.n/nlp_conda_env
+
+pip install torch transformers pandas nltk vectordb

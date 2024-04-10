@@ -1,13 +1,13 @@
 
 from ProcessDataBuildDB import setupTokenizerAndModel
 from EmbeddingGenerator import generate_embedding_from_text
-from VectorDB import VectorClient
+from LocalVectorDB import LocalVectorClient
 
 class Demo:
 
     def __init__(self):
         self.device, self.tokenizer, self.model = setupTokenizerAndModel()
-        self.client = VectorClient()
+        self.db = LocalVectorClient()
 
     def getAnnotations(self, researchObjective, responseLimit=6):
         """
@@ -26,15 +26,12 @@ class Demo:
             ]
         ]
         """
+        print("Generating Embedding for:", researchObjective)
         embedding = generate_embedding_from_text(self.model, self.tokenizer, self.device, researchObjective)
-        response = self.client.search([embedding], responseLimit) 
+        print("Querying database for similar matches")
+        response = self.db.search(embedding, responseLimit) 
         
-        # only query one vector so expect response[0]
-        if len(response) == 0 or len(response[0]):
-            return None
-        
-        annotations = [resp_obj['entity']['annotation'] for resp_obj in response[0]]
-        return annotations
+        return response[0].matches
 
 
 
@@ -44,7 +41,9 @@ if __name__ == '__main__':
 
     query = input("Write a research objective: ")
 
-    annotations = demo.getAnnotations(query)
+    documents = demo.getAnnotations(query)
 
-    for annotation in annotations:
-        print(annotation, '\n')
+    print('Annotated Bibliography:\n')
+
+    for doc in documents:
+        print(doc.text, '\n')

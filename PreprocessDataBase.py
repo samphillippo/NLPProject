@@ -1,74 +1,39 @@
-import os
 import gc
-from time import time
-from concurrent.futures import ProcessPoolExecutor, as_completed
-
-
-from tqdm import tqdm
 import pandas as pd
 
+from LocalVectorDB import VecDoc
 from CitationGenerator import generate_citation
 
 
 def process_file(filename, embedding_func):
-    # local_time = time()
-
-    # print('Processing {}'.format(filename))
 
     df = pd.read_json(filename, lines=True, compression={'method':'xz'})
-
-    # initial_num_docs = df.shape[0]
-
     df = df.dropna(subset=['title']) # drop all rows where the title is None
-    # tot_dropped_missing_data = (initial_num_docs - df.shape[0])
 
-    # tot_dropped_abstract = 0
     if df.shape[0] > 0:
         # filter out abstracts with less than 5 words.
         abstract_mask = [True if x is not None and len(str(x)) > 100 else False for x in df['abstract']]
         temp = df[abstract_mask]
-        # tot_dropped_abstract = df.shape[0] - temp.shape[0]
         df = temp
 
-    # tot_dropped_lang = 0
     if df.shape[0] > 0:
         # language must be english or None (None is almost half of the papers)
         lang_mask = [True if x is None or (isinstance(x, dict) and 'english' == x['name'].lower()) or str(x) == 'nan' else False for x in df['language']]
         temp = df[lang_mask]
-        # tot_dropped_lang = df.shape[0] - temp.shape[0]
         df = temp
 
-    # json_values = []
     embeddings = []
 
     if df.shape[0] > 0:
         print("Generating citations")
         df['citation'] = df.apply(generate_citation, axis=1)
-        # df = df[['title', 'abstract', 'topics', 'citation']]
         print("Generating embeddings")
-        embeddings = [{ "vector": embedding_func(row['title'], row['abstract'], row['topics']), "annotation": "{}\n\n{}".format(row['citation'], row['abstract'])} for _, row in df.iterrows()]
-        # json_values = [row.to_json() for _, row in df.iterrows()]
-
-    # final_num_docs = df.shape[0]
-
-    # file_prefix = filename.split('.')[0]
-    # out_path = FOLDER_PATH + '/' + file_prefix + '.json'
-
-    # if len(json_values) > 0:
-    #     with open(out_path, 'w') as file:
-    #         for json_line in json_values:
-    #             file.write(json_line + '\n')
-
-    #os.remove(filename)
+        embeddings = [VecDoc(embedding=embedding_func(row['title'], row['abstract'], row['topics']), text="{}\n\n{}".format(row['citation'], row['abstract'])) for _, row in df.iterrows()]
 
     del df
     gc.collect()
 
     return embeddings
-
-    # print('Finished processing {} in {} secs\n - {}% docs kept ({} / {})\n'.format(filename, round((time() - local_time), 2), round(100.0 * final_num_docs / initial_num_docs, 2), final_num_docs, initial_num_docs))
-    # return (initial_num_docs, final_num_docs, tot_dropped_missing_data, tot_dropped_abstract, tot_dropped_lang)
-    # END METHOD
 
 
 

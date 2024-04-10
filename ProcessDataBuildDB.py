@@ -4,10 +4,9 @@ from collections import deque
 from transformers import AutoTokenizer, AutoModel
 from torch import torch
 
-from ChunkLargeFile import chunk_xz_file
 from PreprocessDataBase import process_file
 from EmbeddingGenerator import generate_embedding
-from VectorDB import VectorClient
+from LocalVectorDB import LocalVectorClient
 
 
 
@@ -38,6 +37,10 @@ if __name__ == '__main__':
     files = deque(map((lambda file: readFolderPath + '/' + file), filter(lambda x: x.endswith('.xz'), os.listdir(readFolderPath))))
 
     completedFilePath = sys.argv[2]
+    if not os.path.isfile(completedFilePath):
+        open(completedFilePath, 'a').close()
+        print("Created a new completed file path:", completedFilePath)
+
     completedFiles = []
     with open(completedFilePath, 'r+') as file:
         for line in file:
@@ -46,12 +49,10 @@ if __name__ == '__main__':
 
     print("Initializing Tokenizer and model")
     device, tokenizer, model = setupTokenizerAndModel()
+    print("Using device {} to calculate embeddings".format(device))
 
     print("Initializing Vector DB Client")
-    vectorClient = VectorClient()
-
-    #print("Gathering initial files into queue")
-    #files = deque(map((lambda file: FOLDER_PATH + '/' + file), filter(lambda x: x.endswith('.xz'), os.listdir(FOLDER_PATH))))
+    vectorClient = LocalVectorClient()
 
     print("Total files to process: {}".format(len(files)))
     while len(files) > 0:
@@ -71,5 +72,5 @@ if __name__ == '__main__':
             vectorClient.insert(embeddings)
             # denotes file has been processed
             completedFiles.add(file)
-            with open(completedFilePath, 'a') as file:
-                file.write(file + '\n')
+            with open(completedFilePath, 'a') as completed_file:
+                completed_file.write(str(file) + '\n')
