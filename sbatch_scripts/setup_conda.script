@@ -9,7 +9,7 @@
 
 module load anaconda3/2022.05
 
-conda create --prefix=/home/selvitelli.n/nlp_conda_env python=3.9 anaconda
+conda create --prefix=/home/selvitelli.n/nlp_conda_env python=3.9 anaconda -y
 
 source activate /home/selvitelli.n/nlp_conda_env
 
