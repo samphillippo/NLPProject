@@ -32,8 +32,8 @@ def process_file(filename, embedding_func):
         print("Documents to Process: {}".format(df.shape[0]))
         count = 0
         #AVERAGE TIME TAKEN: 0.03 min
+        total_time = time()
         for _, row in df.iterrows():
-            total_time = time()
             embeddings.append(VecDoc(embedding=embedding_func(row['title'], row['abstract'], row['topics']), text="{}\n\n{}".format(row['citation'], row['abstract'])))
             count += 1
             elapsed_time = time() - total_time
