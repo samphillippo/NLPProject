@@ -11,13 +11,16 @@ stopwords_set = get_stopwords_set()
 
 
 def generate_embedding(model, tokenizer, device, title, abstract, topics):
-    token_text = title + ". " + abstract + ". " + " ".join(topics)
+    token_text = " ".join(topics) + ". " + title + ". " + abstract
     return generate_embedding_from_text(model, tokenizer, device, token_text)
 
 
 
 def generate_embedding_from_text(model, tokenizer, device, token_text):
     tokens = tokenizer.tokenize(token_text)
+    #max length 300 words
+    if len(tokens) > 300:
+        tokens = tokens[:300]
 
     token_embeddings = []
     for token in tokens:
