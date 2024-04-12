@@ -11,7 +11,7 @@ class Demo:
 
     def getAnnotations(self, researchObjective, responseLimit=6):
         """
-        
+
         Expect response from vectorDB to look like:
         [
             [
@@ -29,21 +29,23 @@ class Demo:
         print("Generating Embedding for:", researchObjective)
         embedding = generate_embedding_from_text(self.model, self.tokenizer, self.device, researchObjective)
         print("Querying database for similar matches")
-        response = self.db.search(embedding, responseLimit) 
-        
+        response = self.db.search(embedding, responseLimit)
+
         return response[0].matches
 
 
 
 if __name__ == '__main__':
-    
+
     demo = Demo()
 
-    query = input("Write a research objective: ")
+    while True:
+        query = input("Write a research objective: ")
 
-    documents = demo.getAnnotations(query)
+        documents = demo.getAnnotations(query)
 
-    print('Annotated Bibliography:\n')
+        print('Annotated Bibliography:\n')
 
-    for doc in documents:
-        print(doc.text, '\n')
+        for doc in documents:
+            print(doc.text, '\n')
+        print('\n\n')
