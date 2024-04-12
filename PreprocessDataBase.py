@@ -37,7 +37,7 @@ def process_file(filename, embedding_func):
             embeddings.append(VecDoc(embedding=embedding_func(row['title'], row['abstract'], row['topics']), text="{}\n\n{}".format(row['citation'], row['abstract'])))
             count += 1
             elapsed_time = time() - total_time
-            print("Processed {}/{}, {} minutes remaining".format(count, df.shape[0], round((elapsed_time / count) * (df.shape[0] - count) / 60, 2)))
+            print("Processed {}/{}, {} minutes remaining".format(count, df.shape[0], round((elapsed_time / count) * (df.shape[0] - count + 0.00001) / 60, 2)))
 
     del df
     gc.collect()
