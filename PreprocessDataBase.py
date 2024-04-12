@@ -1,4 +1,5 @@
 import gc
+from time import time
 import pandas as pd
 
 from LocalVectorDB import VecDoc
@@ -28,7 +29,13 @@ def process_file(filename, embedding_func):
         print("Generating citations")
         df['citation'] = df.apply(generate_citation, axis=1)
         print("Generating embeddings")
-        embeddings = [VecDoc(embedding=embedding_func(row['title'], row['abstract'], row['topics']), text="{}\n\n{}".format(row['citation'], row['abstract'])) for _, row in df.iterrows()]
+        print("Documents to Process: {}".format(df.shape[0]))
+        count = 0
+        for _, row in df.iterrows():
+            embeddings.append(VecDoc(embedding=embedding_func(row['title'], row['abstract'], row['topics']), text="{}\n\n{}".format(row['citation'], row['abstract'])))
+            count += 1
+            total_time = time()
+            print("Processed {}/{} in {} seconds".format(count, df.shape[0], round(time() - total_time, 2)))
 
     del df
     gc.collect()
