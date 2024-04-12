@@ -31,11 +31,12 @@ def process_file(filename, embedding_func):
         print("Generating embeddings")
         print("Documents to Process: {}".format(df.shape[0]))
         count = 0
+        total_time = time()
         for _, row in df.iterrows():
             embeddings.append(VecDoc(embedding=embedding_func(row['title'], row['abstract'], row['topics']), text="{}\n\n{}".format(row['citation'], row['abstract'])))
             count += 1
-            total_time = time()
-            print("Processed {}/{} in {} seconds".format(count, df.shape[0], round(time() - total_time, 2)))
+            elapsed_time = time() - total_time
+            print("Processed {}/{}, {} minutes remaining".format(count, df.shape[0], round((elapsed_time / count) * (df.shape[0] - count) / 60, 2)))
 
     del df
     gc.collect()
