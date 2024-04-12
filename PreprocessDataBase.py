@@ -13,7 +13,7 @@ def process_file(filename, embedding_func):
 
     if df.shape[0] > 0:
         # filter out abstracts with less than 5 words.
-        abstract_mask = [True if x is not None and len(str(x)) > 100 else False for x in df['abstract']]
+        abstract_mask = [True if x is not None and len(str(x)) > 500 else False for x in df['abstract']]
         temp = df[abstract_mask]
         df = temp
 
