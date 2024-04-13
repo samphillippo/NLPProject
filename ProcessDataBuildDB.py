@@ -69,7 +69,8 @@ if __name__ == '__main__':
             embeddings = process_file(file, lambda title, abstract, topics: generate_embedding(model, tokenizer, device, title, abstract, topics))
             # print(embeddings)
             print("Inserting to Vector DB")
-            vectorClient.insert(embeddings)
+            if len(embeddings) > 0:
+                vectorClient.insert(embeddings)
             # denotes file has been processed
             completedFiles.add(file)
             with open(completedFilePath, 'a') as completed_file:
