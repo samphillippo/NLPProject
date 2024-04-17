@@ -40,3 +40,27 @@ def generate_embedding_from_text(model, tokenizer, device, token_text):
     average_embedding = torch.stack(token_embeddings).mean(dim=0)
 
     return average_embedding.tolist()
+
+
+def test():
+    from transformers import AutoTokenizer, AutoModel
+    from torch import torch
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    # Load SciBERT tokenizer
+    tokenizer = AutoTokenizer.from_pretrained("allenai/scibert_scivocab_uncased")
+
+    # Load SciBERT model
+    model = AutoModel.from_pretrained("allenai/scibert_scivocab_uncased")
+    model = model.to(device)
+
+    # Test generate_embedding_from_text:
+    assert len(generate_embedding_from_text(model, tokenizer, device, "This is a test.")) == 768
+    assert generate_embedding_from_text(model, tokenizer, device, "This is a test.") != generate_embedding_from_text(model, tokenizer, device, "This is not a test")
+    assert generate_embedding_from_text(model, tokenizer, device, "Test") == generate_embedding_from_text(model, tokenizer, device, "Test Test test")
+
+    # Test generate_embedding:
+    assert len(generate_embedding(model, tokenizer, device, "Test", "Test", ["Test"])) == 768
+    assert generate_embedding(model, tokenizer, device, "Test", "Test", ["Test"]) != generate_embedding(model, tokenizer, device, "gibberish", "not test", ["fried egg"])
+    print('All EmbeddingGenerator tests passed!')
