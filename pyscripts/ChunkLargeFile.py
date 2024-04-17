@@ -2,10 +2,11 @@ import os
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
+# gets the size of a file in MB
 def utf8len(s):
     return len(s.encode('utf-8'))
 
-
+# chunks a json file into smaller files of size json_MB_chunk
 def chunk_json_file_write_while_going(filepath, out_dir_prefix, json_MB_chunk=100, compress=True):
     current_KB_size = 0
     num_chunks_made = 0
@@ -44,6 +45,7 @@ def chunk_json_file_write_while_going(filepath, out_dir_prefix, json_MB_chunk=10
     return chunked_filepaths
 
 
+# chunks a .xz file into smaller files of size json_MB_chunk
 def chunk_xz_file(filepath):
     os.system('unxz {}'.format(filepath))
     file_prefix = filepath.split('.json')[0]
@@ -52,15 +54,12 @@ def chunk_xz_file(filepath):
     os.remove(json_path)
     return chunked_filepaths
 
-
-
-
+# finds all .xz files in a folder that are above a certain size
 def find_xz_files_above_size(folderpath, xz_MB_min_size=150):
     filenames = list(filter(lambda x: x.endswith('.xz') and ((os.path.getsize(folderpath + '/' + x) / 1000.0) > (xz_MB_min_size * 1000.0)), os.listdir(folderpath)))
     return filenames
 
-
-
+# chunks all files in a folder
 def chunk_all_files_in_folder(directory):
     files = find_xz_files_above_size(directory, xz_MB_min_size=100)
     print("Chunking {} files".format(len(files)))
@@ -80,22 +79,3 @@ if __name__ == '__main__':
         for future in as_completed(futures):
             result = future.result()
             print("Completed chunking {}".format(result))
-
-
-# if __name__ == '__main__':
-#     files = find_xz_files_above_size(FOLDER, xz_MB_min_size=100)
-
-#     print("Found {} files to chunk".format(len(files)))
-
-#     total_time = time()
-
-#     for index, file in enumerate(files):
-#         print("Chunking {} ({}/{})\n - Extracting file to json...".format(file, index + 1, len(files)))
-#         local_time = time()
-
-#         chunked_files = chunk_xz_file(FOLDER + '/' + file)
-#         num_chunks = len(chunked_files)
-
-#         print(" - Split {} into {} chunks ({} secs)\n".format(file, num_chunks, round((time() - local_time), 2)))
-
-#     print("Complete. ({} secs)".format(round((time() - total_time), 2)))
