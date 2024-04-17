@@ -20,7 +20,7 @@ def generate_citation(data):
         citation += "\"" + str(title) + "\", "
     publisher = data_array['publisher']
     if publisher != None:
-        citation += str(publisher) + ", " 
+        citation += str(publisher) + ", "
     date = data_array['datePublished']
     if date != None:
         try:
@@ -64,7 +64,7 @@ def _parseAuthor(author):
     names = [name for name in names if len(name) > 0]
     if len(names) > 2:
         if len(names) == 3 and '.' in names[2]:
-            return _parseFirstName(names[1]) + _parseFirstName(names[2]) + " " + names[0] + ", " 
+            return _parseFirstName(names[1]) + _parseFirstName(names[2]) + " " + names[0] + ", "
         return ''.join(names)
     if len(names) == 2:
         return _parseFirstName(names[1]) + " " + names[0] + ", "
@@ -84,5 +84,35 @@ def _parseAuthors(authors):
     else:
         for author in authors[:3]:
             parsedAuthorString += _parseAuthor(author)
-        parsedAuthorString += " et al., "
+        parsedAuthorString += "et al., "
     return parsedAuthorString
+
+
+def test():
+    # Test _convert_date:
+    assert _convert_date('2020-01-01') == 'January 2020'
+    assert _convert_date('2020-01') == 'January 2020'
+    assert _convert_date('2020') == '2020'
+    assert _convert_date('2020-01-01T00:00:00Z') == 'January 2020'
+
+    # Test _convert_oai_to_doi:
+    assert _convert_oai_to_doi('oai:core.ac.uk:123456') == 'https://oai.core.ac.uk/oai:core.ac.uk:123456'
+
+    # Test _parseFirstName:
+    assert _parseFirstName('John Joseph Flynn') == 'J.J.F.'
+    assert _parseFirstName('John') == 'J.'
+    assert _parseFirstName('John  Joseph') == 'J.J.'
+    assert _parseFirstName('John-Joseph') == 'J.J.'
+    assert _parseFirstName('donkey kong') == 'D.K.'
+
+    # Test _parseAuthor:
+    assert _parseAuthor('Flynn, John Joseph') == 'J.J. Flynn, '
+    assert _parseAuthor('Flynn') == 'Flynn, '
+    assert _parseAuthor('Flynn, John') == 'J. Flynn, '
+
+    # Test _parseAuthors:
+    assert _parseAuthors(['Flynn, John Joseph', 'Doe, Jane']) == 'J.J. Flynn, J. Doe, '
+    assert _parseAuthors(['Flynn, John Joseph', 'Doe, Jane', 'Smith, John']) == 'J.J. Flynn, J. Doe, J. Smith, '
+    assert _parseAuthors(['Flynn, John Joseph', 'Doe, Jane', 'Smith, John', 'Doe, Jim']) == 'J.J. Flynn, J. Doe, J. Smith, et al., '
+
+    print('All CitationGenetator tests passed!')
