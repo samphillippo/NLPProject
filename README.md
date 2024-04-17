@@ -6,7 +6,8 @@ As the volume of scholarly literature continues to grow, finding relevant resear
 ```
 $ git clone https://github.com/eoinFlynn-NU/NLPProject.git
 $ cd NLPProject
-$ bash create_conda_enc.script
+$ bash create_conda_env.script
+$ source activate nlp_demo_env
 ```
 ## Vector Database Setup
 ```
