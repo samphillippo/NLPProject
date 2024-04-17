@@ -1,0 +1,5 @@
+conda create --name nlp_demo_env python=3.9 anaconda -y
+
+source activate nlp_demo_env
+
+pip install torch transformers pandas nltk vectordb

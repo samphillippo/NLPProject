@@ -1,5 +1,3 @@
 # NLPProject
 
-Hi from discovery
-
-Hi
+call setup file w bash
