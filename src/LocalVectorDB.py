@@ -2,14 +2,15 @@
 from docarray import BaseDoc
 from docarray.typing import NdArray
 from docarray import DocList
-import numpy as np
 from vectordb import HNSWVectorDB
 
+# Document class (schema) for the vector database
 class VecDoc(BaseDoc):
   text: str = ''
   embedding: NdArray[768]
 
 
+# LocalVectorClient class to interact with the vector database
 class LocalVectorClient:
 
     def __init__(self):

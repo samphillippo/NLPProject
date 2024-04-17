@@ -1,21 +1,19 @@
-from time import time
 from torch import torch
 import nltk
 
+# Download stopwords corpus from nltk
 def get_stopwords_set():
     nltk.download('stopwords')
     from nltk.corpus import stopwords
     return set(stopwords.words('english'))
 stopwords_set = get_stopwords_set()
 
-
-
+# Generate an embedding from a title, abstract, and list of topics
 def generate_embedding(model, tokenizer, device, title, abstract, topics):
     token_text = " ".join(topics) + ". " + title + ". " + abstract
     return generate_embedding_from_text(model, tokenizer, device, token_text)
 
-
-
+# Generate an embedding from a represntative text
 def generate_embedding_from_text(model, tokenizer, device, token_text):
     tokens = tokenizer.tokenize(token_text)
     #max length 300 words
@@ -41,7 +39,7 @@ def generate_embedding_from_text(model, tokenizer, device, token_text):
 
     return average_embedding.tolist()
 
-
+# Test the EmbeddingGenerator
 def test():
     from transformers import AutoTokenizer, AutoModel
     from torch import torch

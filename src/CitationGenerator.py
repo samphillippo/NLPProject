@@ -2,11 +2,8 @@ from dateutil import parser
 import datetime
 import re
 
-
+# Generate an IEEE citation for a given row of data
 def generate_citation(data):
-    '''
-    Generate an IEEE citation for a given row of data
-    '''
     data_array = data
     authors = data_array['authors']
     citation = ""
@@ -87,6 +84,7 @@ def _parseAuthors(authors):
     return parsedAuthorString
 
 
+# Test the CitationGenerator
 def test():
     # Test _convert_date:
     assert _convert_date('2020-01-01') == 'January 2020'

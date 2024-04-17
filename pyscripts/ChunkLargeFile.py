@@ -1,5 +1,4 @@
 import os
-from time import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
@@ -41,7 +40,7 @@ def chunk_json_file_write_while_going(filepath, out_dir_prefix, json_MB_chunk=10
         out_chunk_file.close()
         if compress:
             os.system('xz {}'.format(out_path))
-    
+
     return chunked_filepaths
 
 

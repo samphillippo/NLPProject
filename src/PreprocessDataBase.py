@@ -6,13 +6,14 @@ from LocalVectorDB import VecDoc
 from CitationGenerator import generate_citation
 
 
+# This function is used to process the file and generate embeddings for each document.
 def process_file(filename, embedding_func):
 
     df = pd.read_json(filename, lines=True, compression={'method':'xz'})
     df = df.dropna(subset=['title']) # drop all rows where the title is None
 
     if df.shape[0] > 0:
-        # filter out abstracts with less than 5 words.
+        # filter out abstracts with less than 500 characters.
         abstract_mask = [True if x is not None and len(str(x)) > 500 else False for x in df['abstract']]
         temp = df[abstract_mask]
         df = temp

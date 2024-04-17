@@ -9,11 +9,12 @@ from EmbeddingGenerator import generate_embedding
 from LocalVectorDB import LocalVectorClient
 
 
-
+# Check if the file is too large to process
 def shouldChunkFile(filepath, min_size_MB):
     return (os.path.getsize(filepath) / 1000.0) > (min_size_MB * 1000.0)
 
 
+# Initialize the SciBERT tokenizer and model
 def setupTokenizerAndModel():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
