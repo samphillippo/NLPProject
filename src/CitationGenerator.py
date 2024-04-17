@@ -1,4 +1,3 @@
-import pandas as pd
 from dateutil import parser
 import datetime
 import re
@@ -30,7 +29,7 @@ def generate_citation(data):
             pass
     doi = data_array['doi']
     if doi == None:
-        citation += _convert_oai_to_doi(str(doi))
+        citation += _convert_oai_to_doi(str(data_array['oai']))
     else:
         citation += str(doi) + "."
     return citation
@@ -114,5 +113,16 @@ def test():
     assert _parseAuthors(['Flynn, John Joseph', 'Doe, Jane']) == 'J.J. Flynn, J. Doe, '
     assert _parseAuthors(['Flynn, John Joseph', 'Doe, Jane', 'Smith, John']) == 'J.J. Flynn, J. Doe, J. Smith, '
     assert _parseAuthors(['Flynn, John Joseph', 'Doe, Jane', 'Smith, John', 'Doe, Jim']) == 'J.J. Flynn, J. Doe, J. Smith, et al., '
+
+    # Test generate_citation:
+    data = {
+        'authors': ['Flynn, John Joseph', 'Doe, Jane'],
+        'title': 'Title',
+        'publisher': 'Publisher',
+        'datePublished': '2020-01-01',
+        'doi': None,
+        'oai': 'oai:core.ac.uk:123456'
+    }
+    assert generate_citation(data) == 'J.J. Flynn, J. Doe, "Title", Publisher, January 2020, https://oai.core.ac.uk/oai:core.ac.uk:123456'
 
     print('All CitationGenetator tests passed!')
