@@ -9,4 +9,4 @@
 
 module load anaconda3/2022.05
 source activate /home/selvitelli.n/py_env
-python /home/selvitelli.n/NLPProject/src/ChunkLargeFile.py
+python /home/selvitelli.n/NLPProject/pyscripts/ChunkLargeFile.py

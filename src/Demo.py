@@ -41,11 +41,11 @@ if __name__ == '__main__':
 
     while True:
         query = input("Write a research objective: ")
+        if query != '':
+            documents = demo.getAnnotations(query)
 
-        documents = demo.getAnnotations(query)
+            print('Annotated Bibliography:\n')
 
-        print('Annotated Bibliography:\n')
-
-        for doc in documents:
-            print(doc.text, '\n')
-        print('\n\n')
+            for doc in documents:
+                print(doc.text, '\n')
+            print('\n\n')

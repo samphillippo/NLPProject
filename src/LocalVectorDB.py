@@ -13,7 +13,7 @@ class VecDoc(BaseDoc):
 class LocalVectorClient:
 
     def __init__(self):
-        self.db = HNSWVectorDB[VecDoc](workspace='.', space='l2', num_threads=1)
+        self.db = HNSWVectorDB[VecDoc](workspace='../', space='l2', num_threads=1)
 
 
     def insert(self, vectorEmbeddings):
