@@ -4,7 +4,7 @@ As the volume of scholarly literature continues to grow, finding relevant resear
 
 ## Codebase + Evironment Setup
 ```
-$ git clone https://github.com/eoinFlynn-NU/NLPProject.git
+$ git clone https://github.com/samphillippo/NLPProject.git
 $ cd NLPProject
 $ bash create_conda_env.script
 $ source activate nlp_demo_env
